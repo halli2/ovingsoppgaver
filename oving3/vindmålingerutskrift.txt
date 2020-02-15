@@ -1,0 +1,4 @@
+Antall: 8011104
+Gjennomsnitt: 1.69
+Maksimum: 51.90
+Minimum: 0.00
