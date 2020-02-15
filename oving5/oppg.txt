@@ -1,0 +1,6 @@
+multiple choice spill
+bruker
+spørsmål
+svar
+skal rapportere om svar er riktig
+telle antall svar
