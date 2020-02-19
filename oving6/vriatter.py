@@ -113,8 +113,6 @@ class Vri:
         print('Vinneren er! %s' %Vri.runde_spiller)
         self.game_over = True
 
-                
-
 
 
     def legg_kort(self):
@@ -174,9 +172,6 @@ class Vri:
                         x = False
                         test = False
                         self.trekk_kort()
-
-
-
 
 
 if __name__ == "__main__":
