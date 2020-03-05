@@ -33,6 +33,7 @@ class Vri:
     runde_spiller = ''
     def __init__(self):
         self.spillere = {}
+        self.legg_til_spillere
         self.stokk = k.Kortstokk()
         self.stokk.lag_standard_kort()
         self.stokk.stokk()
@@ -44,12 +45,12 @@ class Vri:
     def legg_til_spillere(self):
         antall = input('Hvor mange spillere: ')
         self.spillere = Spillere()
-        for n in range(int(antall)):
+        for _ in range(int(antall)):
             navn = input('Navn: ')
             self.tur[str(Vri.identitet)] = navn
             Vri.identitet += 1
             hand = []
-            for i in range(5):
+            for _ in range(5):
                 hand.append(self.stokk.trekk())
             self.spillere.nyspiller(navn, hand)
 
@@ -72,8 +73,8 @@ class Vri:
     def trekk_kort(self):
         if not self.stokk.kortene:
             behold_kort = self.bunke.trekk() # Beholder øverste kortet!
-            for x in self.bunke.kortene:
-                self.stokk.legg(self.bunke.trekk())                         # SJEKK HVA SOM SKJER HER!! stokk? duplikat kort?
+            for _ in self.bunke.kortene:
+                self.stokk.legg(self.bunke.trekk())                         
             self.bunke.legg(behold_kort)
         try:
             kort = self.stokk.trekk()
@@ -142,7 +143,7 @@ class Vri:
                     # trekk kortet legg på bunken.
                     x = False
                     overst_i_bunke = self.bunke.overste_kort()
-                    if ja.verdi == 8:                         # FÅ TIL AT ÅTTEN BLIR TATT VEKK SÅ DEN IKKE KAN LEGGES 2 GANGER.
+                    if ja.verdi == 8:
                         print("8'er")
                         self.bunke.legg(n)
                         self.atter_kort()
@@ -173,26 +174,32 @@ class Vri:
                         test = False
                         self.trekk_kort()
 
+        if not self.spillere.spillere[Vri.runde_spiller]:
+            self.winner()
+
+
 
 if __name__ == "__main__":
-    vrimeg = Vri()
-    vrimeg.legg_til_spillere()
-    vrimeg.runde()
-    # vrimeg.kort_pa_hand()
-    # vrimeg.legg_kort()
-    while vrimeg.game_over == False:
-        print('%s sin tur' %vrimeg.spiller_tur())
-        print(vrimeg.overst_bunke())
-        vrimeg.kort_pa_hand()
+    test_vri = Vri()
+    test_vri.legg_til_spillere()
+    test_vri.runde()
+    # test_vri.kort_pa_hand()
+    # test_vri.legg_kort()
+    
+    while test_vri.game_over == False:
+        print('')
+        print('%s sin tur' %test_vri.spiller_tur())
+        print(test_vri.overst_bunke())
+        test_vri.kort_pa_hand()
         move = input(
             '0: Legg kort \n1: Trekk kort \nAvslutt: for å avslutte spillet.\n'
         )
         if move == '0':
-            vrimeg.legg_kort()
+            test_vri.legg_kort()
         elif move == '1':
-            vrimeg.trekk_kort()
+            test_vri.trekk_kort()
         elif move == 'Avslutt':
             break
         else:
             print('Ingen gyldig input, prøver på ny. \n \n')
-        vrimeg.runde()
+        test_vri.runde()
