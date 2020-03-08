@@ -20,6 +20,7 @@ class Student:
         self.fornavn = fornavn
         self.studieprogram = studieprogram
         self.aarskurs = aarskurs
+        self.emner = []
 
     @property
     def studentnummer(self):
@@ -36,6 +37,11 @@ class Student:
         if nytt_aarskurs > 5:
             raise ValueError("Årskurs kan ikke være over 5!")
         self.__aarskurs = nytt_aarskurs
+
+    
+    # HER ER DU.
+    def nytt_emne(self, nytt_emne):
+        self.emner.append(nytt_emne)
 
     def __str__(self):
         return f"Student {self.__studentnummer}: {self.fornavn} {self.etternavn}, studerer {self.studieprogram} i" \
