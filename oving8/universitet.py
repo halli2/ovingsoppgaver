@@ -39,9 +39,28 @@ class Student:
         self.__aarskurs = nytt_aarskurs
 
     
-    # HER ER DU.
+    # A)
+
     def nytt_emne(self, nytt_emne):
         self.emner.append(nytt_emne)
+        # Gjør at legger til i emner?
+        
+
+
+    # B)
+    def belastning(self):
+        belastning = 0
+        for emne in self.emner:
+            belastning += emne.studiepoeng
+        return belastning
+
+    # C)
+    def emneutskrift(self):
+        emner_til_studenten = ''
+        for emne in self.emner:
+            emner_til_studenten += f'{emne.emnenavn} \n'
+        return f'{self.fornavn} {self.etternavn} har følgende emner:\n{emner_til_studenten}'
+
 
     def __str__(self):
         return f"Student {self.__studentnummer}: {self.fornavn} {self.etternavn}, studerer {self.studieprogram} i" \
@@ -61,16 +80,42 @@ class Foreleser:
 
 
 class Emne:
-    def __init__(self, emnekode, emnenavn, studiepoeng=10, semester="H", emneansvarlig=None):
+    def __init__(self, emnekode, emnenavn, studiepoeng=10, semester="H", emneansvarlig=None, kontakt_epost=None):
         self.emnekode = emnekode
         self.emnenavn = emnenavn
         self.studiepoeng = studiepoeng
         self.semester = semester
         self.emneansvarlig = emneansvarlig
+        self.studenter = []
+        if kontakt_epost == None and emneansvarlig == None:
+             self.kontakt_epost = None
+        elif emneansvarlig == None:
+            self.kontakt_epost = kontakt_epost
+        else:
+            self.kontakt_epost = emneansvarlig.epost
+
+    # D)
+    # lag en liste med alle studentene som har emne
+    def sett_kontakt_epost(self, ny_kontakt_epost):
+        self.kontakt_epost = ny_kontakt_epost
+
+    def legg_til_student(self, student: Student):
+        if self in student.emner:
+            self.studenter.append(student)
+        else:
+            student.emner.append(self)
+            self.studenter.append(student)
+
+    def klasseliste(self):
+        klasseliste = f'Studenter som tar emne {self.emnenavn}:\n'
+        for student in self.studenter:
+            klasseliste += f'{student.fornavn} {student.etternavn}\n'
+        return klasseliste
+        
 
     def __str__(self):
         return f"Emne {self.emnekode} {self.emnenavn} på {self.studiepoeng} studiepoeng i " \
-            f"semester {self.semester} og har {self.emneansvarlig}"
+            f"semester {self.semester} og har {self.emneansvarlig}. Kontaktepost er {self.kontakt_epost}"
 
 
 class System:
@@ -143,6 +188,42 @@ class System:
         self.studenter.append(Student("Ås", "Erling", "Elektro"))
         self.studenter.append(Student("Fredriksen", "Anne", "Elektro"))
 
+        # metodene under kaller metodene laget i oppgaven.
+
+    def skriv_inn_emne_student(self):
+        self.skriv_studenter()
+        svar_stud = les_heltall("Velg student: ")
+        self.skriv_emner()
+        svar_nytt_emne = les_heltall("Velg emne: ")
+        self.emner[svar_nytt_emne].legg_til_student(self.studenter[svar_stud])
+
+
+    def belastning_til_student(self):
+        self.skriv_studenter()
+        svar = les_heltall("Velg student: ")
+        belastning = self.studenter[svar].belastning()
+        print(f"Studenten har belastning på {belastning} studiepoeng.")
+
+    def emneutskrift_til_student(self):
+        for idx, student in enumerate(self.studenter):
+            print(f'{idx}: {student}')
+        svar = les_heltall("Velg student: ")
+        print(self.studenter[svar].emneutskrift())
+    
+    def studenter_i_emne(self):
+        for idx, emne in enumerate(self.emner):
+            print(f'{idx}: {emne}')
+        svar = les_heltall("Velg emne: ")
+        print(self.emner[svar].klasseliste())
+
+        
+    def legg_til_kontakt_epost(self):
+        for idx, emne in enumerate(self.emner):
+            print(f'{idx}: {emne}')
+        svar = les_heltall("Velg emne: ")
+        ny_kontakt_epost = input("Skriv inn epost: ")
+        self.emner[svar].sett_kontakt_epost(ny_kontakt_epost)
+
     def meny(self):
         fortsetter = True
         while fortsetter:
@@ -154,6 +235,11 @@ class System:
             print("4: skriv ut foreleserne")
             print("5: skriv ut emnene")
             print("6: Angi foreleser for et emne")
+            print("7: Legg til emne for student")
+            print("8: Skriv ut belastning til student")
+            print("9: Skriv ut emner til student")
+            print("10: Skriv ut studenter som har emne")
+            print("11: Sett kontakt-epost for emne")
             print("s: Sett inn standard data (for testing)")
             print("a: avslutt")
             valg = input("Valg: ")
@@ -171,6 +257,16 @@ class System:
                 self.skriv_emner()
             elif valg == "6":
                 self.sett_foreleser_for_emne()
+            elif valg == "7":
+                self.skriv_inn_emne_student()
+            elif valg == "8":
+                self.belastning_til_student()
+            elif valg == "9":
+                self.emneutskrift_til_student()
+            elif valg == "10":
+                self.studenter_i_emne()
+            elif valg == "11":
+                self.legg_til_kontakt_epost()
             elif valg == "s":
                 self.sett_inn_standard_data()
             elif valg == "a":
