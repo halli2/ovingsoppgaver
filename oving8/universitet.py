@@ -43,7 +43,6 @@ class Student:
 
     def nytt_emne(self, nytt_emne):
         self.emner.append(nytt_emne)
-        # Gjør at legger til i emner?
         
 
 
